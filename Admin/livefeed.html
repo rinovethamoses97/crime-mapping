@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style type="text/css">
+
+    .card-data-label{
+      font-weight: 500;
+    }
+      #buttons1,#buttons2
+      {
+        text-align: center;
+      }
+          #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+  }
+  
+  #snackbar.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;} 
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;} 
+      to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+  }
+    </style>
+    <title></title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+    
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPbm0fK3V_afs1n3ydF2aTyr6RbGzpNNM&libraries=places"
+           async defer></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+   
+  <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA5CL_sP2l-kEQNyqo5YaZtKZTDCy2bMJM",
+      authDomain: "crime-mapping-6fa70.firebaseapp.com",
+      databaseURL: "https://crime-mapping-6fa70.firebaseio.com",
+      projectId: "crime-mapping-6fa70",
+      storageBucket: "crime-mapping-6fa70.appspot.com",
+      messagingSenderId: "404519466704"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    var states=[
+      ['Uttar Pradesh', 0,0,0,0,0,0],
+      ['Maharashtra', 0,0,0,0,0,0],
+      ['Bihar', 0,0,0,0,0,0],
+      ['West Bengal', 0,0,0,0,0,0],
+      ['Madhya Pradesh', 0,0,0,0,0,0],
+      ['Tamil Nadu', 0,0,0,0,0,0],
+      ['Rajasthan', 0,0,0,0,0,0],
+      ['Karnataka', 0,0,0,0,0,0],
+      ['Gujarat', 0,0,0,0,0,0],
+      ['Andhra Pradesh', 0,0,0,0,0,0],
+      ['Telangana', 0,0,0,0,0,0],
+      ['Kerala', 0,0,0,0,0,0],
+      ['Jharkhand', 0,0,0,0,0,0],
+      ['Assam', 0,0,0,0,0,0],
+      ['Punjab', 0,0,0,0,0,0],
+      ['Chhattisgarh', 0,0,0,0,0,0],
+      ['Haryana', 0,0,0,0,0,0],
+      ['Jammu and Kashmir', 0,0,0,0,0,0],
+      ['Uttarakhand', 0,0,0,0,0,0],
+      ['Himachal Pradesh', 0,0,0,0,0,0],
+      ['Tripura', 0,0,0,0,0,0],
+      ['Meghalaya', 0,0,0,0,0,0],
+      ['Manipur', 0,0,0,0,0,0],
+      ['Nagaland', 0,0,0,0,0,0],
+      ['Goa', 0,0,0,0,0,0],
+      ['Arunachal Pradesh', 0,0,0,0,0,0],
+      ['Mizoram', 0,0,0,0,0,0],
+      ['Sikkim', 0,0,0,0,0,0],
+      ['Delhi', 0,0,,0,0,0,0],
+      ['Puducherry', 0,0,0,0,0,0],
+      ['Chandigarh', 0,0,0,0,0,0],
+      ['Andaman and Nicobar Islands', 0,0,0,0,0,0],
+      ['Dadra and Nagar Haveli', 0,0,0,0,0,0],
+      ['Daman and Diu', 0,0,0,0,0,0],
+      ['Lakshadweep', 0,0,0,0,0,0],
+      ['Odhisa',0,0,0,0,0,0]
+          ]
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>W-Protect</title>
+  <!-- Bootstrap core CSS-->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav bg-dark" id="page-top">
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background-color:#1d2125!important">      
+    <a class="navbar-brand" href="index.html">W-Protect</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard" >
+              <a class="nav-link" href="index.html" >
+                <i class="fa fa-fw fa-dashboard"></i>
+                <span class="nav-link-text">Dashboard</span>
+              </a>
+            </li>
+            
+           
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Example Pages">
+              <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseExamplePages" data-parent="#exampleAccordion">
+                <i class="fa fa-fw fa-map"></i>
+                <span class="nav-link-text">Special Maps</span>
+              </a>
+              <ul class="sidenav-second-level collapse" id="collapseExamplePages">
+                <li>
+                  <a href="heatmap.html">Heat Map</a>
+                </li>
+                <li>
+                  <a href="cluster.html">Intensity Map</a>
+                </li>
+               
+              </ul>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+                <a class="nav-link" href="charts.html">
+                  <i class="fa fa-fw fa-area-chart"></i>
+                  <span class="nav-link-text">Charts</span>
+                </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+                <a class="nav-link" href="trend.html">
+                  <i class="fa fa-fw fa-line-chart"></i>
+                  <span class="nav-link-text">Trends</span>
+                </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                  <a class="nav-link" href="tables.html">
+                    <i class="fa fa-fw fa-table"></i>
+                    <span class="nav-link-text">Tables</span>
+                  </a>
+                </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+              <a class="nav-link" href="csv.html">
+                <i class="fa fa-fw fa-database"></i>
+                <span class="nav-link-text">Data Upload</span>
+              </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+                <a class="nav-link" href="https://crime-mapping-6fa70.firebaseio.com/Crime.json?print=pretty&format=export&download=crime-mapping-6fa70-export.json">
+                  <i class="fa fa-fw fa-download"></i>
+                  <span class="nav-link-text">Data Download</span>
+                </a>
+              </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+              <a class="nav-link" href="livefeed.html">
+                <i class="fa fa-circle" style="font-size:18px;color:red"></i>
+                <span class="nav-link-text">Live Feed(SOS)</span>
+              </a>
+            </li>
+          </ul>
+      
+      
+
+
+
+        
+      
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-fw fa-bell"></i>
+            <span class="d-lg-none">Alerts
+              <span class="badge badge-pill badge-warning">6 New</span>
+            </span>
+            <span class="indicator text-warning d-none d-lg-block">
+              <i class="fa fa-fw fa-circle"></i>
+            </span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
+            <h6 class="dropdown-header">New Alerts:</h6>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-success">
+                <strong>
+                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-danger">
+                <strong>
+                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-success">
+                <strong>
+                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item small" href="#">View all alerts</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <form class="form-inline my-2 my-lg-0 mr-lg-2">
+            <div class="input-group">
+              <input class="form-control" type="text" placeholder="Search for...">
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper">
+    <div class="container-fluid" id="main">
+      
+<!-- Main -->
+    
+        <!-- <br>
+  
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="fa fa-area-chart"></i>Bar Graph</div>
+            <div class="card-body">
+
+
+            </div>
+            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+        </div> -->
+      
+
+  
+
+
+
+
+
+
+
+
+
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bootstrap core JavaScript-->
+
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
+    <!-- Custom scripts for this page-->
+    <script src="js/sb-admin-charts.min.js"></script> 
+  </div>
+</body>
+<script type="text/javascript">
+window.onload=init;
+function init()
+{
+    //initialise;
+    getData();
+}
+function getData()
+{
+    var Ref = firebase.database().ref("SOS/");
+  
+     Ref.on("child_added", function(data, prevChildKey) {
+        
+        
+        for(var i=0;i<10000000;i++)
+        {}
+        
+        var image = new Image();
+        var imagesrc=data.val().img;
+        var src="data:image/png;base64,";
+        src=src+imagesrc;
+        var audiosrc="data:audio/mp3;base64,";
+        
+        var temp1=data.child("location").val().latitude;
+        
+        //audiosrc=audiosrc+"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vTI4Luf/mUkEjVZFm+1kYhEACkpwA0GxZFmUloTMgxCGa5D/+4BkC4ADJkZS+0wa+klnik8wwk8MuN0/9ZYAIOeXaj6YIAWGCt1jg6WLtTlTNk047bHZd4TC6JZkWhKWNUayUNsxbUszNkdZdKVEFPHE5oEuzKFBDjvt0TUGlhf382ClAFQBCV7P/9aXP2/pcE/hTZXq8Q1MzAAAicBCkSEZWAeJJBzO8SzZn+EngjHnx2s4AyOx8zNvGKuiHKaZ//GQ2kTDkvWxVX/zBRJXKwU2ln9DDkSowqGsQ1sJNEUyIYCAAIa4BrxQc1B/IlwsBKrLSgZpLXWyv7EYC5W30Vuszj4hKVo+hcoEtdAIgIpVkC9OQzBSbZ3/04uZbPG3vv167OOVbzY3aWWT+w7pOif+8zOW2szmVhteKt37wkXf+epQ2ZvLKu5huv8ARSKzdii0sAyLc8peT7Wakd3YQrlOXLWF0M+n/IJIvs5ny/6VIAnOFLS0Lj/bSckGbZn+PhGAcT3e4LQ4AAABMEvMkf/7YEQJAAM0M03uYeAAbIZprc08AAAAAf4cAAAgAAA/w4AABEgNddotWAhNK/1vF/XbTF/18eK5WfxOlKOYnx+lxxjohOocTtllTrL/7RxfwImjlUNX0PG//Z+p1IwrpW2fRoW///2UtrfSvke2rj/P///+pm6goP1e42DoA6AV8osDYAAAOkCbUxRsmE5da8IwJhxjMv+YaSyZaP/ANRrJb+QJMmE3KU0cY5UEvV5C1DBevf/x5o99aEhrckzmf43XPY1GjzsYTKcXsjknnf//8BvSjFG1JqDFr/////S0IdxM069MQU1FMy45OC4yVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EGQQD/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjk4LjJVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV//sQZDIP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAEVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVTEFNRTMuOTguMlVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+xBkVA/wAABpAAAACAAADSAAAAEAAAGkAAAAIAAANIAAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVMQU1FMy45OC4yVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/7EGR2D/AAAGkAAAAIAAANIAAAAQAAAaQAAAAgAAA0gAAABFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVUxBTUUzLjk4LjJVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV";
+        
+        audiosrc=audiosrc+data.child("audio").val().img;
+        console.log(audiosrc);
+      var main=document.getElementById("main");
+      if(data.val().Status=="Solved")
+      {
+        $("#main").append("<div class='card mb-3'>"
+           +"<div class='card-header'>"
+           +"Crime ID: "+data.key+"</div>"
+            +"<div class='card-body'>"
+            +"<div class='col-md-6' style='float:left'>"
+            // crime deatils here
+            +"<div class='pt-1' id='d"+data.key+"'><span class='card-data-label'>Status: </span>"+data.val().Status+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Risk Level: </span>"+ data.val().Risk+"</div>"
+            
+            +"<div class='pt-1'><span class='card-data-label'>Label Detection: </span>"+data.val().LABEL_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Landmark Detection:</span> "+data.val().LANDMARK_DETECTION+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Logo Detection: </span>"+data.val().LOGO_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Safe Search Detection: </span>"+data.val().SAFE_SEARCH_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Safe Score: </span>"+data.val().Safe_Score+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Latitude: </span>"+data.child("location").val().latitude+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Latitude: </span>"+data.child("location").val().longitude+"</div>"       
+            
+            
+            +"</div>"
+            
+            
+            +"<div class='col-md-6' style='float:right'>"
+            +"<image style='padding-bottom:8px' src="+ src+"><br><audio controls><source id='au"+data.key+"'  src="+audiosrc+" type='audio/ogg'></audio>"
+            +"</div>"
+           
+            
+            
+            
+            +"</div>"
+      +"</div><br>");
+      }
+      else
+      {
+        
+        $("#main").append("<div class='card mb-3'>"
+           +"<div class='card-header'>"
+           +"Crime ID: "+data.key+"</div>"
+            +"<div class='card-body'>"
+            +"<div class='col-md-6' style='float:left'>"
+            // crime deatils here
+            +"<div class='pt-1' id='d"+data.key+"'><span class='card-data-label'>Status: </span>"+data.val().Status+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Risk Level: </span>"+ data.val().Risk+"</div>"
+            
+            +"<div class='pt-1'><span class='card-data-label'>Label Detection: </span>"+data.val().LABEL_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Landmark Detection: </span>"+data.val().LANDMARK_DETECTION+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Logo Detection: </span>"+data.val().LOGO_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Safe Search Detection: </span>"+data.val().SAFE_SEARCH_DETECTION_EDITED+"</div>"
+            +"<div class='pt-1'><span class='card-data-label'>Safe Score: </span>"+data.val().Safe_Score+"</div>"
+            +"<div><span class='card-data-label'>Latitude: </span>"+data.child("location").val().latitude+"</div>"
+            +"<div><span class='card-data-label'>Longitude: </span>"+data.child("location").val().longitude+"</div>"       
+            
+
+
+            +"<input class='btn btn-info mt-2' type='button' id='"+data.key+"' name='"+data.val().Status+"'  value='Change State' onclick='changeState(this.id,this.name)'>&nbsp;"
+            
+            
+            +"</div>"
+            
+            
+            +"<div class='col-md-6' style='float:right'>"
+            +"<image style='padding-bottom:8px' src="+ src+"><br><audio controls><source id='au"+data.key+"' src="+audiosrc+" type='audio/ogg'></audio>"
+            +"</div>"
+           
+            
+            
+            
+            +"</div>"
+      +"</div><br>"); 
+      }    
+
+      var x=document.getElementById("au"+data.key);
+      x.setAttribute("src",audiosrc);
+  });
+
+}
+function changeState(a,name)
+{
+ 
+  if(name=="New")
+  {
+  var Ref = firebase.database().ref("SOS/");
+  
+  var updates = {};
+  updates['Status'] = "In Progress";
+  firebase.database().ref("SOS/"+a).update(updates)
+  alert("Status Updated");
+
+  var b='d'+a;
+  var temp=document.getElementById(b);
+  var button=document.getElementById(a);
+  button.setAttribute("name","In Progress");
+  temp.innerHTML="<label>Status</label>In Progress";
+  
+  
+  }
+  else if(name=="In Progress")
+  {
+    var Ref = firebase.database().ref("SOS/");
+  
+    var updates = {};
+   updates['Status'] = "Solved";
+   firebase.database().ref("SOS/"+a).update(updates)
+   alert("Status Updated");
+
+   var b='d'+a;
+   var temp=document.getElementById(b);
+   var button=document.getElementById(a);
+   button.setAttribute("type","hidden");
+   button.setAttribute("name","Solved");
+   
+   temp.innerHTML="<label>Status</label>Solved";
+
+  }
+}
+
+</script>
+  
+</html>

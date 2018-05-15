@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style type="text/css">
+      #buttons1,#buttons2
+      {
+        text-align: center;
+      }
+      .filter-selected
+      {
+               color:#fff!important;
+               padding: 8px;
+      }
+      .side-bar-filter-heading
+      {
+        color: #fff;
+        font-size:16px;
+        font: weight 500;
+      }
+      .filter-unselected
+      {
+              
+              padding: 8px;
+              color: #868e96!important;
+              
+      }
+      .filter-unselected:hover
+      {
+        color: #adb5bd!important;
+        cursor: pointer
+      }
+      .side-bar-filter
+      {
+        float:right;
+        padding:15px 12px 12px 12px;
+        background-color:#343a40;
+        height:720px;
+        margin-top:-38px;
+      }
+          #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+  }
+  
+  #snackbar.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;} 
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;} 
+      to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+  }
+    </style>
+    <title></title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+      
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPbm0fK3V_afs1n3ydF2aTyr6RbGzpNNM&libraries=places,visualization"
+           async defer></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA5CL_sP2l-kEQNyqo5YaZtKZTDCy2bMJM",
+      authDomain: "crime-mapping-6fa70.firebaseapp.com",
+      databaseURL: "https://crime-mapping-6fa70.firebaseio.com",
+      projectId: "crime-mapping-6fa70",
+      storageBucket: "crime-mapping-6fa70.appspot.com",
+      messagingSenderId: "404519466704"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    var states=[
+      ['Uttar Pradesh', 0,0,0,0,0,0],
+      ['Maharashtra', 0,0,0,0,0,0],
+      ['Bihar', 0,0,0,0,0,0],
+      ['West Bengal', 0,0,0,0,0,0],
+      ['Madhya Pradesh', 0,0,0,0,0,0],
+      ['Tamil Nadu', 0,0,0,0,0,0],
+      ['Rajasthan', 0,0,0,0,0,0],
+      ['Karnataka', 0,0,0,0,0,0],
+      ['Gujarat', 0,0,0,0,0,0],
+      ['Andhra Pradesh', 0,0,0,0,0,0],
+      ['Telangana', 0,0,0,0,0,0],
+      ['Kerala', 0,0,0,0,0,0],
+      ['Jharkhand', 0,0,0,0,0,0],
+      ['Assam', 0,0,0,0,0,0],
+      ['Punjab', 0,0,0,0,0,0],
+      ['Chhattisgarh', 0,0,0,0,0,0],
+      ['Haryana', 0,0,0,0,0,0],
+      ['Jammu and Kashmir', 0,0,0,0,0,0],
+      ['Uttarakhand', 0,0,0,0,0,0],
+      ['Himachal Pradesh', 0,0,0,0,0,0],
+      ['Tripura', 0,0,0,0,0,0],
+      ['Meghalaya', 0,0,0,0,0,0],
+      ['Manipur', 0,0,0,0,0,0],
+      ['Nagaland', 0,0,0,0,0,0],
+      ['Goa', 0,0,0,0,0,0],
+      ['Arunachal Pradesh', 0,0,0,0,0,0],
+      ['Mizoram', 0,0,0,0,0,0],
+      ['Sikkim', 0,0,0,0,0,0],
+      ['Delhi', 0,0,,0,0,0,0],
+      ['Puducherry', 0,0,0,0,0,0],
+      ['Chandigarh', 0,0,0,0,0,0],
+      ['Andaman and Nicobar Islands', 0,0,0,0,0,0],
+      ['Dadra and Nagar Haveli', 0,0,0,0,0,0],
+      ['Daman and Diu', 0,0,0,0,0,0],
+      ['Lakshadweep', 0,0,0,0,0,0],
+      ['Odhisa',0,0,0,0,0,0]
+          ]
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>W-Protect</title>
+  <!-- Bootstrap core CSS-->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background-color:#1d2125!important">
+    <a class="navbar-brand" href="index.html">W-Protect</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard" >
+          <a class="nav-link" href="index.html" >
+            <i class="fa fa-fw fa-dashboard"></i>
+            <span class="nav-link-text">Dashboard</span>
+          </a>
+        </li>
+        
+       
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Example Pages">
+          <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseExamplePages" data-parent="#exampleAccordion">
+            <i class="fa fa-fw fa-map"></i>
+            <span class="nav-link-text">Special Maps</span>
+          </a>
+          <ul class="sidenav-second-level collapse" id="collapseExamplePages">
+            <li>
+              <a href="heatmap.html">Heat Map</a>
+            </li>
+            <li>
+              <a href="cluster.html">Intensity Map</a>
+            </li>
+           
+          </ul>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+            <a class="nav-link" href="charts.html">
+              <i class="fa fa-fw fa-area-chart"></i>
+              <span class="nav-link-text">Charts</span>
+            </a>
+          </li>
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+            <a class="nav-link" href="trend.html">
+              <i class="fa fa-fw fa-line-chart"></i>
+              <span class="nav-link-text">Trends</span>
+            </a>
+          </li>
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+              <a class="nav-link" href="tables.html">
+                <i class="fa fa-fw fa-table"></i>
+                <span class="nav-link-text">Tables</span>
+              </a>
+            </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+          <a class="nav-link" href="csv.html">
+            <i class="fa fa-fw fa-database"></i>
+            <span class="nav-link-text">Data Upload</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+            <a class="nav-link" href="https://crime-mapping-6fa70.firebaseio.com/Crime.json?print=pretty&format=export&download=crime-mapping-6fa70-export.json">
+              <i class="fa fa-fw fa-download"></i>
+              <span class="nav-link-text">Data Download</span>
+            </a>
+          </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+          <a class="nav-link" href="livefeed.html">
+            <i class="fa fa-circle" style="font-size:18px;color:red"></i>
+            <span class="nav-link-text">Live Feed(SOS)</span>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" onclick="document.getElementById('notification_circle').style.display='none';">
+            <i class="fa fa-fw fa-bell" onclick="document.getElementById('notification_circle').style.display='none';"></i>
+            <span class="d-lg-none">Alerts
+              <!-- <span class="badge badge-pill badge-warning">6 New</span> -->
+            </span>
+            <span class="indicator text-warning d-none d-lg-block">
+              <i id="notification_circle"  class="fa fa-fw fa-circle" style="display:none"></i>
+            </span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
+            <h6 class="dropdown-header">New Alerts:</h6>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item">
+              <span class="text-danger">
+                <strong>
+                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
+              </span>
+              <span id="time1" class="small float-right text-muted"></span>
+              <div id="id1" class="dropdown-message small">No Alert</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" >
+              <span class="text-danger">
+                <strong>
+                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
+              </span>
+              <span id="time2" class="small float-right text-muted"></span>
+              <div id="id2" class="dropdown-message small">No Alert</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" >
+              <span class="text-danger">
+                <strong>
+                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
+              </span>
+              <span id="time3" class="small float-right text-muted"></span>
+              <div id="id3" class="dropdown-message small">No Alert</div>
+            </a>
+            <!-- <div class="dropdown-divider"></div>
+            <a class="dropdown-item small" href="#">View all alerts</a>
+          </div> -->
+        </li>
+       
+        <li class="nav-item">
+         
+            <div class="input-group" style="width:400px;z-index:500;">
+              <input class="form-control" type="text" placeholder="Search for..." id="pac-input">
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper" style="padding:0;margin-top:-4px;" >
+    <div class="container-fluid" style="padding:0">
+
+<div class="col-md-9" style="padding:0">
+    <div style="width:100%;float:left;padding:8px;text-align:center;font-weight:500">Crime Map 2018 - Live View</div>
+  <div style="width:100%;height:720px;float:left;padding:0" id="googlemap"></div>	
+</div>
+<div class="col-md-3 side-bar-filter" >  
+    <div>
+        <label class="side-bar-filter-heading" >Crime Type</label>    
+              <div id="filter1" class="filter-unselected" ><a value="All" onclick="alltype()" >All<a></div>
+              <div id="filter2" class="filter-unselected"><a value="Child Marriage" onclick="childmarriage()" >Child Marriage</a></div>
+              <div id="filter3" class="filter-unselected"><a value="Dowry" onclick="dowry()" >Dowry</a></div>
+              <div id="filter4" class="filter-unselected"> <a value="Domestic Violence" onclick="domesticviolence()" >Domestic</a></div>
+              <div id="filter5" class="filter-unselected"><a value="Rape" onclick="rape()"  >Rape</a></div>
+              <div id="filter6" class="filter-unselected"> <a value="Sexual Harrasment" onclick="sexualharrasment()"  >Sexual Harassment</a></div>
+            </div><br>
+          <div>
+              <label class="side-bar-filter-heading" >Data Type</label>            
+              <div id="filter7" class="filter-unselected"> <a value="alldatatype" onclick="alldatatype()"  >All</a></div>
+              <div id="filter8" class="filter-unselected"> <a value="alldatatype" onclick="reliable()"  >Verified</a></div>
+              <div id="filter9" class="filter-unselected"> <a value="alldatatype" onclick="notreliable()"  >Unverified</a></div>
+            </div> 
+</div>  
+       
+      
+      
+<!-- Main content -->
+  
+      
+      <div id="snackbar">Some text some message..</div>
+    <!--Main Content  -->
+    
+    
+       
+        
+       </div>
+    
+    <!-- Scroll to Top Button-->
+    <!-- <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a> -->
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
+    <!-- Custom scripts for this page-->
+    <script src="js/sb-admin-datatables.min.js"></script>
+    <script src="js/sb-admin-charts.min.js"></script>
+    <audio id="myAudio">
+        <source src="buttonclick.mp3" type="audio/mpeg">
+      </audio>
+  </div>
+</body>
+<script type="text/javascript">
+var data_type="all";
+  var type="all";
+  var locations,count,map;
+  var no_of_children=0;
+  document.getElementById("filter1").className="filter-selected";
+document.getElementById("filter7").className="filter-selected";
+
+  window.onload=init;
+  function unselectcrimetype()
+{
+  document.getElementById("filter1").className="filter-unselected";
+  document.getElementById("filter2").className="filter-unselected";
+  document.getElementById("filter3").className="filter-unselected";
+  document.getElementById("filter4").className="filter-unselected";
+  document.getElementById("filter5").className="filter-unselected";
+  document.getElementById("filter6").className="filter-unselected";
+}
+function unselectdatatype()
+{
+  document.getElementById("filter7").className="filter-unselected";
+  document.getElementById("filter8").className="filter-unselected";
+  document.getElementById("filter9").className="filter-unselected";
+  
+}
+function rape()
+{
+  unselectcrimetype();
+  document.getElementById("filter5").className="filter-selected";
+  document.getElementById('myAudio').play();
+	if(type!="Rape")
+	{
+	type="Rape";
+	init();
+    }
+}
+function alldatatype()
+{
+  unselectdatatype();
+  document.getElementById("filter7").className="filter-selected";
+  if(data_type!="all")
+	{
+	data_type="all";
+	init();
+    } 
+}
+function reliable()
+{  
+  unselectdatatype();
+  document.getElementById("filter8").className="filter-selected";
+  if(data_type!="yes")
+	{
+	data_type="yes";
+	init();
+    }
+}
+function notreliable()
+{
+  unselectdatatype();
+  document.getElementById("filter9").className="filter-selected";
+  if(data_type!="no")
+	{
+	data_type="no";
+	init();
+    }
+}
+function childmarriage()
+{
+  unselectcrimetype();
+  document.getElementById("filter2").className="filter-selected";
+	if(type!="Child Marriage")
+	{
+	type="Child Marriage";
+    init();  	 
+    }
+}
+function domesticviolence()
+{
+
+   unselectcrimetype();
+  document.getElementById("filter4").className="filter-selected";
+	if(type!="Domestic Violence")
+	{
+	type="Domestic Violence";
+	init();
+    }
+}
+function sexualharrasment()
+{
+  unselectcrimetype();
+  document.getElementById("filter6").className="filter-selected";
+	if(type!="Sexual Harrasment")
+	{
+	type="Sexual Harrasment";
+	init();
+    }
+}
+function dowry()
+{
+  unselectcrimetype();
+  document.getElementById("filter3").className="filter-selected";
+	if(type!="Dowry")
+	{
+	type="Dowry";
+    init();  	
+    }
+}
+function alltype()
+{
+  unselectcrimetype();
+  document.getElementById("filter1").className="filter-selected";
+	if(type!="all")
+	{
+     type="all";
+     init();	
+    }
+}
+
+  function init()
+  {
+      //getting no of children under crime
+      no_of_children=0;
+      var ref = firebase.database().ref("Crime/");
+     ref.once("value")
+    .then(function(snapshot) {
+        no_of_children = snapshot.numChildren(); 
+        
+        var ll=new google.maps.LatLng(18.562947442888312,78.2666015625);
+      var mapproperty={
+          center:ll,
+          zoom:5,
+      }
+           
+
+
+
+      myMap(mapproperty,ll)
+      
+   
+      });
+         
+  
+      
+  }	
+  function myMap(mapproperty)
+  {	  locations=new Array();
+      var temp_count=0;
+      count=0; 
+      map=new google.maps.Map(document.getElementById("googlemap"),mapproperty);
+
+//creating a search box to locate the places 
+var input =document.getElementById("pac-input");
+// input.setAttribute("type","text");
+// input.setAttribute("placeholder","Search a place");
+// input.setAttribute("id","pac-input");
+// input.style.width="400px";
+// input.setAttribute("class","form-control");
+
+      searchBox = new google.maps.places.SearchBox(input);
+      //map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+
+      // Bias the SearchBox results towards current map's viewport.
+      // map.addListener('bounds_changed', function() {
+      //   searchBox.setBounds(map.getBounds());
+      // });
+
+      
+      // Listen for the event fired when the user selects a prediction and retrieve
+      // more details for that place.
+      searchBox.addListener('places_changed', function() {
+        var places = searchBox.getPlaces();
+
+        if (places.length == 0) {
+          return;
+        }
+
+        
+        // For each place, get the icon, name and location.
+         bounds = new google.maps.LatLngBounds();
+
+        places.forEach(function(place) {
+          if (!place.geometry) {
+            console.log("Returned place contains no geometry");
+            return;
+          }
+          
+          
+
+        
+          if (place.geometry.viewport) {
+            // Only geocodes have viewport.
+            bounds.union(place.geometry.viewport);
+          } else {
+            bounds.extend(place.geometry.location);
+          }
+        });
+        map.fitBounds(bounds);
+      });
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      var Ref = firebase.database().ref("Crime/");
+      Ref.on("child_added", function(data, prevChildKey) {
+          temp_count++;
+          var crime=data.val();
+          //console.log(count);
+          console.log(no_of_children);
+          if(data_type==data.val().reliable || data_type=="all")
+  {
+          if(crime.crimeType==type ||type=="all")
+          {
+      
+          locations[count]=new google.maps.LatLng(crime.location.latitude,crime.location.longitude);
+          count++;
+          }
+  }
+          if(temp_count==no_of_children)
+          {
+             plotcluster(locations,map);
+          }	
+          
+      });
+      
+      
+      
+  }
+  function plotcluster(locations,map)
+  {
+      var heatmap = new google.maps.visualization.HeatmapLayer({
+            data: locations,
+            dissipating: true,
+            map: map
+          });
+  }
+  
+  </script>
+</html>

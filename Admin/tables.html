@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <style type="text/css">
+      #buttons1,#buttons2
+      {
+        text-align: center;
+      }
+     
+          #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+  }
+  
+  #snackbar.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  }
+  
+  @-webkit-keyframes fadein {
+      from {bottom: 0; opacity: 0;} 
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @keyframes fadein {
+      from {bottom: 0; opacity: 0;}
+      to {bottom: 30px; opacity: 1;}
+  }
+  
+  @-webkit-keyframes fadeout {
+      from {bottom: 30px; opacity: 1;} 
+      to {bottom: 0; opacity: 0;}
+  }
+  
+  @keyframes fadeout {
+      from {bottom: 30px; opacity: 1;}
+      to {bottom: 0; opacity: 0;}
+  }
+    </style>
+    <title>W-Protect</title>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+      
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPbm0fK3V_afs1n3ydF2aTyr6RbGzpNNM&libraries=places"
+           async defer></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyA5CL_sP2l-kEQNyqo5YaZtKZTDCy2bMJM",
+      authDomain: "crime-mapping-6fa70.firebaseapp.com",
+      databaseURL: "https://crime-mapping-6fa70.firebaseio.com",
+      projectId: "crime-mapping-6fa70",
+      storageBucket: "crime-mapping-6fa70.appspot.com",
+      messagingSenderId: "404519466704"
+    };
+    firebase.initializeApp(config);
+  </script>
+  <script>
+    var states=[
+      ['Uttar Pradesh', 0,0,0,0,0,0],
+      ['Maharashtra', 0,0,0,0,0,0],
+      ['Bihar', 0,0,0,0,0,0],
+      ['West Bengal', 0,0,0,0,0,0],
+      ['Madhya Pradesh', 0,0,0,0,0,0],
+      ['Tamil Nadu', 0,0,0,0,0,0],
+      ['Rajasthan', 0,0,0,0,0,0],
+      ['Karnataka', 0,0,0,0,0,0],
+      ['Gujarat', 0,0,0,0,0,0],
+      ['Andhra Pradesh', 0,0,0,0,0,0],
+      ['Telangana', 0,0,0,0,0,0],
+      ['Kerala', 0,0,0,0,0,0],
+      ['Jharkhand', 0,0,0,0,0,0],
+      ['Assam', 0,0,0,0,0,0],
+      ['Punjab', 0,0,0,0,0,0],
+      ['Chhattisgarh', 0,0,0,0,0,0],
+      ['Haryana', 0,0,0,0,0,0],
+      ['Jammu and Kashmir', 0,0,0,0,0,0],
+      ['Uttarakhand', 0,0,0,0,0,0],
+      ['Himachal Pradesh', 0,0,0,0,0,0],
+      ['Tripura', 0,0,0,0,0,0],
+      ['Meghalaya', 0,0,0,0,0,0],
+      ['Manipur', 0,0,0,0,0,0],
+      ['Nagaland', 0,0,0,0,0,0],
+      ['Goa', 0,0,0,0,0,0],
+      ['Arunachal Pradesh', 0,0,0,0,0,0],
+      ['Mizoram', 0,0,0,0,0,0],
+      ['Sikkim', 0,0,0,0,0,0],
+      ['Delhi', 0,0,,0,0,0,0],
+      ['Puducherry', 0,0,0,0,0,0],
+      ['Chandigarh', 0,0,0,0,0,0],
+      ['Andaman and Nicobar Islands', 0,0,0,0,0,0],
+      ['Dadra and Nagar Haveli', 0,0,0,0,0,0],
+      ['Daman and Diu', 0,0,0,0,0,0],
+      ['Lakshadweep', 0,0,0,0,0,0],
+      ['Odhisa',0,0,0,0,0,0]
+          ]
+  </script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>SB Admin - Start Bootstrap Template</title>
+  <!-- Bootstrap core CSS-->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom fonts for this template-->
+  <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Page level plugin CSS-->
+  <link href="vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin.css" rel="stylesheet">
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav" style="background-color:#1d2125!important">
+    <a class="navbar-brand" href="index.html">Start Bootstrap</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard" >
+              <a class="nav-link" href="index.html" >
+                <i class="fa fa-fw fa-dashboard"></i>
+                <span class="nav-link-text">Dashboard</span>
+              </a>
+            </li>
+            
+           
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Example Pages">
+              <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseExamplePages" data-parent="#exampleAccordion">
+                <i class="fa fa-fw fa-map"></i>
+                <span class="nav-link-text">Special Maps</span>
+              </a>
+              <ul class="sidenav-second-level collapse" id="collapseExamplePages">
+                <li>
+                  <a href="heatmap.html">Heat Map</a>
+                </li>
+                <li>
+                  <a href="cluster.html">Intensity Map</a>
+                </li>
+                
+              </ul>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+                <a class="nav-link" href="charts.html">
+                  <i class="fa fa-fw fa-area-chart"></i>
+                  <span class="nav-link-text">Charts</span>
+                </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+                <a class="nav-link" href="trend.html">
+                  <i class="fa fa-fw fa-line-chart"></i>
+                  <span class="nav-link-text">Trends</span>
+                </a>
+              </li>
+              <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+                  <a class="nav-link" href="tables.html">
+                    <i class="fa fa-fw fa-table"></i>
+                    <span class="nav-link-text">Tables</span>
+                  </a>
+                </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+              <a class="nav-link" href="csv.html">
+                <i class="fa fa-fw fa-database"></i>
+                <span class="nav-link-text">Data Upload</span>
+              </a>
+            </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+                <a class="nav-link" href="https://crime-mapping-6fa70.firebaseio.com/Crime.json?print=pretty&format=export&download=crime-mapping-6fa70-export.json">
+                  <i class="fa fa-fw fa-download"></i>
+                  <span class="nav-link-text">Data Download</span>
+                </a>
+              </li>
+            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Link">
+              <a class="nav-link" href="livefeed.html">
+                <i class="fa fa-circle" style="font-size:18px;color:red"></i>
+                <span class="nav-link-text">Live Feed(SOS)</span>
+              </a>
+            </li>
+          </ul>    
+      <ul class="navbar-nav sidenav-toggler">
+        <li class="nav-item">
+          <a class="nav-link text-center" id="sidenavToggler">
+            <i class="fa fa-fw fa-angle-left"></i>
+          </a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle mr-lg-2" id="alertsDropdown" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-fw fa-bell"></i>
+            <span class="d-lg-none">Alerts
+              <span class="badge badge-pill badge-warning">6 New</span>
+            </span>
+            <span class="indicator text-warning d-none d-lg-block">
+              <i class="fa fa-fw fa-circle"></i>
+            </span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="alertsDropdown">
+            <h6 class="dropdown-header">New Alerts:</h6>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-success">
+                <strong>
+                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-danger">
+                <strong>
+                  <i class="fa fa-long-arrow-down fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <span class="text-success">
+                <strong>
+                  <i class="fa fa-long-arrow-up fa-fw"></i>Status Update</strong>
+              </span>
+              <span class="small float-right text-muted">11:21 AM</span>
+              <div class="dropdown-message small">This is an automated server response message. All systems are online.</div>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item small" href="#">View all alerts</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <form class="form-inline my-2 my-lg-0 mr-lg-2">
+            <div class="input-group">
+              <input class="form-control" type="text" placeholder="Search for...">
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper" style="margin-top:-4px">
+    <div class="container-fluid">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Tables</li>
+      </ol>
+      <!-- Example DataTables Card-->
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i> Data Table(Current Year)</div>
+        <div class="card-body">
+          <div class="table-responsive">
+              <table class="table table-bordered" id="example" width="100%" cellspacing="0"></table>
+            <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> -->
+              <!-- <thead>
+                <tr>
+                  
+                  <th>Name</th>
+                  <th>Total</th>
+                  <th>Rape</th>
+                  <th>Sexual Harassment</th>
+                  <th>Child Marriage</th>
+                  <th>Dowry</th>
+                  <th>Domestic Violence</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Total</th>
+                    <th>Rape</th>
+                    <th>Sexual Harassment</th>
+                    <th>Child Marriage</th>
+                    <th>Dowry</th>
+                    <th>Domestic Violence</th>
+                </tr>
+              </tfoot>
+              <tbody id="tablebody">
+                
+                  <tr><td>Uttar Pradesh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                  <tr><td>Maharashtra</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                  <tr><td>Bihar</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                  <tr><td>West Bengal</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                  </tr><tr><td>Madhya Pradesh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Tamil Nadu</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Rajasthan</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Karnataka</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Gujarat</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Andhra Pradesh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Telangana</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Kerala</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Jharkhand</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Assam</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Punjab</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Chhattisgarh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Haryana</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Jammu and Kashmir</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Uttarakhand</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Himachal Pradesh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Tripura</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Meghalaya</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Manipur</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Nagaland</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Goa</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Arunachal Pradesh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Mizoram</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Sikkim</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Delhi</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Puducherry</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Chandigarh</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Andaman and Nicobar Islands</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Dadra and Nagar Haveli</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Daman and Diu</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Lakshadweep</td><td>0</td></td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr><tr><td>Odhisa</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+                </tbody> -->
+                
+            <!-- </table> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid-->
+    <!-- /.content-wrapper-->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fa fa-angle-up"></i>
+    </a>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <!-- Page level plugin JavaScript-->
+    <script src="vendor/datatables/jquery.dataTables.js"></script>
+    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin.min.js"></script>
+    <!-- Custom scripts for this page-->
+    <script src="js/sb-admin-datatables.min.js"></script>
+  </div>
+</body>
+<script>
+  
+    var no_of_children=0;	
+    var notification_flag=1;
+    function init_state_data()
+    {
+    for(var i in states)
+    {
+      states[i][1]=states[i][2]=states[i][3]=states[i][4]=states[i][5]=states[i][6]=0;
+    }
+      
+    }
+    
+    init_state_data();
+    
+    var type="all";	
+    window.onload=init;
+    var map;
+    function init()
+    {
+        no_of_children=0;
+      var ref = firebase.database().ref("Crime/");
+       ref.once("value")
+      .then(function(snapshot) {
+          no_of_children = snapshot.numChildren(); 
+        
+          var ll=new google.maps.LatLng(18.562947442888312,78.2666015625);
+             myMap(ll,05,type);
+        });
+             
+    }
+    function rape()
+    {
+      if(type!="Rape")
+      {
+      type="Rape";
+      init();
+        }
+    }
+    function childmarriage()
+    {
+      if(type!="Child Marriage")
+      {
+      type="Child Marriage";
+        init();  	
+        }
+    }
+    function domesticviolence()
+    {
+      if(type!="Domestic Violence")
+      {
+      type="Domestic Violence";
+      init();
+        }
+    }
+    function sexualharrasment()
+    {
+      if(type!="Sexual Harrasment")
+      {
+      type="Sexual Harrasment";
+      init();
+        }
+    }
+    function dowry()
+    {
+      if(type!="Dowry")
+      {
+      type="Dowry";
+        init();  	
+        }
+    }
+    function alltype()
+    {
+      if(type!="all")
+      {
+         type="all";
+         init();	
+        }
+    }
+    
+    function myMap(ll,z,type) {
+    
+    
+    rino(map,type); 
+    
+    
+    }
+    
+    function rino(map,type)
+    {
+      init_state_data();
+        var temp_count=0;
+      var Ref = firebase.database().ref("Crime/");
+    
+       Ref.on("child_added", function(data, prevChildKey) {
+       var crime = data.val();
+       temp_count++;
+       if(temp_count>no_of_children)
+       {
+          document.getElementById("snackbar").innerHTML="New Crime Added in "+crime.state;
+          myFunction(crime.state,crime.location);
+       }
+       var current_date=new Date();
+       var current_year=current_date.getFullYear();
+       var date=crime.date.split("-");
+       var year=date[0];
+       if(current_year==year)
+       {
+        console.log(crime.date);
+       //get count of each crime in each state here
+       for(var i in states){
+         if(states[i][0]==crime.state)
+         {
+        states[i][6]++;   
+        if(crime.crimeType=="Dowry")
+        {
+          states[i][3]++;
+        }
+        else if(crime.crimeType=="Rape")
+        {
+          states[i][4]++;
+        }
+        else if(crime.crimeType=="Domestic Violence")
+        {
+          states[i][2]++;
+        }
+        else if(crime.crimeType=="Sexual Harrasment")
+        {
+          states[i][5]++;
+        }
+        else if(crime.crimeType=="Child Marriage")
+        {
+          states[i][1]++;
+        }
+         }
+       }
+      
+    
+       }
+       if(temp_count==no_of_children)
+       {
+         draw_bar();
+       }
+    });
+    }
+   
+       
+     //setInterval(draw_bar,10);   
+    function draw_bar()
+    {
+      $('#example').DataTable( {
+        data: states,
+        columns: [
+            { title: "State" },
+            { title: "Child Marriage" },
+            { title: "Domestic Violence" },
+            { title: "Dowry" },
+            { title: "Rape" },
+            { title: "Sexual Harrasment" },
+            { title: "Total" }
+        ]
+    } );
+      
+      
+      // var a=document.getElementById("tablebody");
+      
+      // for(var i in states)
+      //  {
+      //     for(var j=0;j<a.childElementCount;j++)
+      //     {
+      //       if(a.children[j].children[0].firstChild.nodeValue!=null)
+      //       {
+      //       if(a.children[j].children[0].firstChild.nodeValue==states[i][0])
+      //       {
+      //         console.log(states[i][0]);
+      //         a.children[j].children[1].firstChild.nodeValue=states[i][6];
+      //         a.children[j].children[2].firstChild.nodeValue=states[i][4];
+      //         a.children[j].children[3].firstChild.nodeValue=states[i][5];
+      //         a.children[j].children[4].firstChild.nodeValue=states[i][1];
+      //         a.children[j].children[5].firstChild.nodeValue=states[i][3];
+      //         a.children[j].children[6].firstChild.nodeValue=states[i][2];
+      //       }
+      //       }
+      //     }
+      //  }
+
+    }
+    function gotointensitymap()
+    {
+      location="intensitymap.html";
+    }
+    function gototrendsmap()
+    {
+      location="highlighting.html";
+    }
+    function myFunction(state,location) {
+        document.getElementById('notification_circle').style.display="block";
+        if(notification_flag==1)
+        {
+            var a=document.getElementById("id1").innerHTML="New Crime Reported in "+state+"<br> At latitude:"+location.latitude+"<br> At longitude: "+location.longitude;
+            var t=new Date();  
+            document.getElementById('time1').innerHTML=t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+        }
+        else if(notification_flag==2)
+        {
+          var b=document.getElementById("id2").innerHTML="New Crime Reported in "+state+"<br> At latitude:"+location.latitude+"<br>At longitude: "+location.longitude;
+          var t=new Date();  
+            document.getElementById('time2').innerHTML=t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+        } 
+        else if(notification_flag==3)
+        {
+          var c=document.getElementById("id3").innerHTML="New Crime Reported in "+state+"<br> At latitude:"+location.latitude+"<br> At longitude: "+location.longitude;
+          var t=new Date();  
+            document.getElementById('time3').innerHTML=t.getHours()+":"+t.getMinutes()+":"+t.getSeconds();
+        }
+        notification_flag=(notification_flag+1)%4;
+        if(notification_flag==0)
+          notification_flag=1; 
+        var x = document.getElementById("snackbar")
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+    }
+    </script>
+    
+</html>
