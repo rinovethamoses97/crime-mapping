@@ -666,26 +666,26 @@ function plot(map,crimeType,location,about,marker_count,markers,reliable,key,dat
     markers[marker_count] = new google.maps.Marker();
     var infowindow = new google.maps.InfoWindow();
 	markers[marker_count].setPosition(new google.maps.LatLng(location.latitude,location.longitude));
-	if(crimeType=="Dowry")
-	{
-		markers[marker_count].setIcon("dowry.png");
-	}
-	else if(crimeType=="Rape")
-	{
-		markers[marker_count].setIcon("rape.png");
-	}
-	else if(crimeType=="Domestic Violence")
-	{
-		markers[marker_count].setIcon("domesticviolence.png");
-	}
-	else if(crimeType=="Sexual Harrasment")
-	{
-		markers[marker_count].setIcon("sexualharassment.png");
-	}
-	else if(crimeType=="Child Marriage")
-	{
-		markers[marker_count].setIcon("childmarriage.png");
-	}
+// 	if(crimeType=="Dowry")
+// 	{
+// 		markers[marker_count].setIcon("dowry.png");
+// 	}
+// 	else if(crimeType=="Rape")
+// 	{
+// 		markers[marker_count].setIcon("rape.png");
+// 	}
+// 	else if(crimeType=="Domestic Violence")
+// 	{
+// 		markers[marker_count].setIcon("domesticviolence.png");
+// 	}
+// 	else if(crimeType=="Sexual Harrasment")
+// 	{
+// 		markers[marker_count].setIcon("sexualharassment.png");
+// 	}
+// 	else if(crimeType=="Child Marriage")
+// 	{
+// 		markers[marker_count].setIcon("childmarriage.png");
+// 	}
 	if(reliable=="no")
   {
     markers[marker_count].setMap(map);
